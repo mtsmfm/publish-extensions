@@ -1,0 +1,31 @@
+name: Debug
+
+on:
+  pull_request
+
+jobs:
+  publish_extensions:
+    env:
+      FAILED_EXTENSIONS: rebornix.ruby
+    name: node publish-extensions
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - run: npm install
+    - run: npm install --global yarn
+    - run: mkdir -p /tmp/results
+    - run: node publish-extensions
+      env:
+        OVSX_PAT: dummy
+    - run: node report-extensions
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: /tmp/results/*.vsix

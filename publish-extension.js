@@ -128,7 +128,15 @@ const exec = require('./lib/exec');
             if (yarn) {
                 options.yarn = true;
             }
-            await ovsx.publish(options);
+            try {
+              await ovsx.publish(options);
+            } catch (e) {
+              if (options.extensionFile) {
+                console.log(options.extensionFile);
+                fs.renameSync(options.extensionFile, `/tmp/results/${id}.vsix`);
+              }
+              throw e;
+            }
         }
         console.log(`[OK] Successfully published ${id} to Open VSX!`)
     } catch (error) {
