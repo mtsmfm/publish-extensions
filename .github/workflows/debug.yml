@@ -26,6 +26,7 @@ jobs:
     - run: npm install
     - run: npm install --global yarn
     - run: mkdir -p /tmp/results
+    - run: emcc --version
     - run: node publish-extensions
       env:
         OVSX_PAT: dummy
