@@ -6,7 +6,7 @@ on:
 jobs:
   publish_extensions:
     env:
-      FAILED_EXTENSIONS: rebornix.ruby, slevesque.vscode-3dviewer
+      FAILED_EXTENSIONS: crysislinux.openjscad
     name: node publish-extensions
     runs-on: ubuntu-latest
     steps:
