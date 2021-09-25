@@ -1,0 +1,39 @@
+name: Debug
+
+on:
+  pull_request
+
+jobs:
+  publish_extensions:
+    env:
+      FAILED_EXTENSIONS: crysislinux.openjscad
+    name: node publish-extensions
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        git clone https://github.com/emscripten-core/emsdk /tmp/emsdk
+        cd /tmp/emsdk
+        ./emsdk install 2.0.0
+        ./emsdk activate 2.0.0 --global
+        echo "/tmp/emsdk/upstream/emscripten" >> $GITHUB_PATH
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - run: npm install
+    - run: npm install --global yarn
+    - run: mkdir -p /tmp/results
+    - run: emcc --version
+    - run: node publish-extensions
+      env:
+        OVSX_PAT: dummy
+    - run: node report-extensions
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: /tmp/results/*.vsix
+        tag_name: dummy
